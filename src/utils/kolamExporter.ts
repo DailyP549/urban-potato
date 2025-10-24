@@ -238,6 +238,89 @@ export class KolamExporter {
 		document.body.removeChild(a);
 	}
 
+
+	 static async exportAsAnimatedGIF(
+        element: HTMLElement,
+        pattern: KolamPattern,
+        options: ExportOptions & { frameCount?: number; delay?: number } = { format: 'gif' }
+    ): Promise<Blob> {
+        // Dynamically import gif.js
+        const GIF = (await import('gif.js')).default;
+        
+        const gif = new GIF({
+            workers: 2,
+            quality: 10,
+            width: pattern.dimensions.width,
+            height: pattern.dimensions.height,
+        });
+
+        const frameCount = options.frameCount || 20;
+        const delay = options.delay || 200;
+
+        // Create frames by progressively showing elements
+        for (let frame = 0; frame <= frameCount; frame++) {
+            // Temporarily modify the element to show progressive animation
+            const progressPercentage = frame / frameCount;
+            const dotsToShow = Math.floor(pattern.dots.length * progressPercentage);
+            const curvesToShow = Math.floor(pattern.curves.length * progressPercentage);
+
+            // Hide elements beyond current frame
+            const allDots = element.querySelectorAll('.kolam-dot, .kolam-dot-animated');
+            const allCurves = element.querySelectorAll('.kolam-line, .kolam-line-animated, .kolam-curve, .kolam-curve-animated');
+
+            allDots.forEach((dot, index) => {
+                (dot as HTMLElement).style.opacity = index < dotsToShow ? '1' : '0';
+            });
+
+            allCurves.forEach((curve, index) => {
+                (curve as HTMLElement).style.opacity = index < curvesToShow ? '1' : '0';
+            });
+
+            // Capture frame
+            const canvas = await html2canvas(element, {
+                backgroundColor: options.backgroundColor || '#ffffff',
+                scale: options.scale || 1,
+                useCORS: true,
+            });
+
+            gif.addFrame(canvas, { delay });
+        }
+
+        // Reset element visibility
+        const allElements = element.querySelectorAll('.kolam-dot, .kolam-dot-animated, .kolam-line, .kolam-line-animated, .kolam-curve, .kolam-curve-animated');
+        allElements.forEach(el => {
+            (el as HTMLElement).style.opacity = '1';
+        });
+
+        return new Promise((resolve) => {
+            gif.on('finished', (blob: Blob) => resolve(blob));
+            gif.render();
+        });
+    }
+
+    static async downloadAnimatedGIF(
+        element: HTMLElement,
+        pattern: KolamPattern,
+        filename: string,
+        options: ExportOptions & { frameCount?: number; delay?: number } = { format: 'gif' }
+    ): Promise<void> {
+        try {
+            const blob = await this.exportAsAnimatedGIF(element, pattern, options);
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.gif`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error creating animated GIF:', error);
+            throw error;
+        }
+    }
+
 	static async exportAsAnimatedGIF(
 		element: HTMLElement,
 		pattern: KolamPattern,
