@@ -1756,6 +1756,7 @@ import React, { useCallback, useEffect, useRef, useState, ChangeEvent } from "re
 import { KolamPattern } from "@/types/kolam";
 import { KolamExporter } from "@/utils/kolamExporter";
 import { KolamGenerator } from "@/utils/kolamGenerator";
+import Image from "next/image";
 import {
   durationToSpeed,
   generateEmbedURL,
@@ -2413,16 +2414,13 @@ export const KolamEditor: React.FC = () => {
                         </label>
                       </div>
 
-                      /* {uploadedImage && (
+                       {uploadedImage && (
                         <div className="mt-4">
                           <h4 className="font-semibold text-gray-700 mb-2">Preview:</h4>
-                          <img
-                            src={uploadedImage}
-                            alt="Uploaded kolam"
-                            className="w-full max-w-md mx-auto rounded-lg shadow-md"
-                          />
+                          <img src={uploadedImage} alt="Uploaded kolam" className="w-full max-w-md mx-auto rounded-lg shadow-md"/>
+							<Image  src={uploadedImage} alt="Uploaded kolam" className="w-full max-w-md mx-auto rounded-lg shadow-md"/>
                         </div>
-                      )} */
+                      )} 
                     </div>
                   )}
 
