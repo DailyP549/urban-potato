@@ -1960,10 +1960,10 @@ export const KolamEditor: React.FC = () => {
     }, 2000);
   };
 
-  const recreateDesign = () => {
-    if (!uploadedImage) return;
-    console.log("Recreating design from uploaded image...");
-  };
+  // const recreateDesign = () => {
+  //   if (!uploadedImage) return;
+  //   console.log("Recreating design from uploaded image...");
+  // };
 
   const copyRawSVG = async () => {
     if (!currentPattern) return;
@@ -2413,7 +2413,7 @@ export const KolamEditor: React.FC = () => {
                         </label>
                       </div>
 
-                      {uploadedImage && (
+                      /* {uploadedImage && (
                         <div className="mt-4">
                           <h4 className="font-semibold text-gray-700 mb-2">Preview:</h4>
                           <img
@@ -2422,7 +2422,7 @@ export const KolamEditor: React.FC = () => {
                             className="w-full max-w-md mx-auto rounded-lg shadow-md"
                           />
                         </div>
-                      )}
+                      )} */
                     </div>
                   )}
 
