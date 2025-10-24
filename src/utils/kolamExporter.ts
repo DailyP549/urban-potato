@@ -166,8 +166,8 @@
 
 import html2canvas from 'html2canvas-pro';
 import { ExportOptions, KolamPattern } from '@/types/kolam';
-import GIF from 'gif.js';
-import { encodeGIF } from 'gifenc';
+ import GIF from 'gif.js';
+ import { encodeGIF } from 'gifenc';
 
 export class KolamExporter {
 	static async exportAsSVG(pattern: KolamPattern): Promise<string> {
@@ -237,6 +237,10 @@ export class KolamExporter {
 		a.click();
 		document.body.removeChild(a);
 	}
+
+
+
+	
 
 
 	 static async exportAsAnimatedGIF(
@@ -401,6 +405,14 @@ export class KolamExporter {
 	}
 
 	static async getEmbedCode(pattern: KolamPattern, options: { width?: number; height?: number } = {}): Promise<string> {
+		const svgString = await this.exportAsSVG(pattern);
+		const encodedSvg = encodeURIComponent(svgString);
+		const width = options.width || pattern.dimensions.width;
+		const height = options.height || pattern.dimensions.height;
+
+		return `<img src="data:image/svg+xml,${encodedSvg}" width="${width}" height="${height}" alt="${pattern.name}" />`;
+	}
+		static async getEmbedCode(pattern: KolamPattern, options: { width?: number; height?: number } = {}): Promise<string> {
 		const svgString = await this.exportAsSVG(pattern);
 		const encodedSvg = encodeURIComponent(svgString);
 		const width = options.width || pattern.dimensions.width;
