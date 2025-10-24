@@ -1780,10 +1780,10 @@ export const KolamEditor: React.FC = () => {
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
   const [animationState, setAnimationState] = useState<"stopped" | "playing" | "paused">("stopped");
   
-  const [lineWidth, setLineWidth] = useState(8);
-  const [dotRadius, setDotRadius] = useState(3);
-  const [lineColor, setLineColor] = useState("#000000");
-  const [dotColor, setDotColor] = useState("#dc2626");
+  //const [lineWidth, setLineWidth] = useState(8);
+  //const [dotRadius, setDotRadius] = useState(3);
+  //const [lineColor, setLineColor] = useState("#000000");
+  //const [dotColor, setDotColor] = useState("#dc2626");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   
