@@ -2417,8 +2417,16 @@ export const KolamEditor: React.FC = () => {
                        {uploadedImage && (
                         <div className="mt-4">
                           <h4 className="font-semibold text-gray-700 mb-2">Preview:</h4>
-                          <img src={uploadedImage} alt="Uploaded kolam" className="w-full max-w-md mx-auto rounded-lg shadow-md"/>
-							<Image  src={uploadedImage} alt="Uploaded kolam" className="w-full max-w-md mx-auto rounded-lg shadow-md"/>
+                          {/* <img src={uploadedImage} alt="Uploaded kolam" className="w-full max-w-md mx-auto rounded-lg shadow-md"/>
+							<Image  src={uploadedImage} alt="Uploaded kolam" className="w-full max-w-md mx-auto rounded-lg shadow-md"/> */}
+							<Image 
+                              src={uploadedImage} 
+                              alt="Uploaded kolam" 
+                              width={500}
+                              height={400}
+                              className="w-full h-auto object-contain"
+                              unoptimized // Since it's a data URL from file upload
+                            />
                         </div>
                       )} 
                     </div>
