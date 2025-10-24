@@ -637,6 +637,9 @@
 
 import html2canvas from 'html2canvas-pro';
 import { ExportOptions, KolamPattern } from '@/types/kolam';
+// src/utils/kolamExporter.ts
+import GIF from 'gif.js';
+
 
 export class KolamExporter {
   static async exportAsSVG(pattern: KolamPattern): Promise<string> {
