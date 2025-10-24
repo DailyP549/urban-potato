@@ -166,7 +166,8 @@
 
 import html2canvas from 'html2canvas-pro';
 import { ExportOptions, KolamPattern } from '@/types/kolam';
-//import GIF from 'gif.js';
+import GIF from 'gif.js';
+import { encodeGIF } from 'gifenc';
 
 export class KolamExporter {
 	static async exportAsSVG(pattern: KolamPattern): Promise<string> {
@@ -324,4 +325,57 @@ export class KolamExporter {
 
 		return `<img src="data:image/svg+xml,${encodedSvg}" width="${width}" height="${height}" alt="${pattern.name}" />`;
 	}
+	
+static async exportAsAnimatedGIF(
+    element: HTMLElement,
+    pattern: KolamPattern,
+    options: ExportOptions & { frameCount?: number; delay?: number } = { format: 'gif' }
+): Promise<Blob> {
+    const frameCount = options.frameCount || 20;
+    const delay = options.delay || 200;
+    const frames: Uint8ClampedArray[] = [];
+
+    for (let frame = 0; frame <= frameCount; frame++) {
+        const progressPercentage = frame / frameCount;
+        const dotsToShow = Math.floor(pattern.dots.length * progressPercentage);
+        const curvesToShow = Math.floor(pattern.curves.length * progressPercentage);
+
+        const allDots = element.querySelectorAll('.kolam-dot, .kolam-dot-animated');
+        const allCurves = element.querySelectorAll('.kolam-line, .kolam-line-animated, .kolam-curve, .kolam-curve-animated');
+
+        allDots.forEach((dot, index) => {
+            (dot as HTMLElement).style.opacity = index < dotsToShow ? '1' : '0';
+        });
+
+        allCurves.forEach((curve, index) => {
+            (curve as HTMLElement).style.opacity = index < curvesToShow ? '1' : '0';
+        });
+
+        const canvas = await html2canvas(element, {
+            backgroundColor: options.backgroundColor || '#ffffff',
+            scale: options.scale || 1,
+            useCORS: true,
+        });
+
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            frames.push(imageData.data);
+        }
+    }
+
+    // Reset element visibility
+    const allElements = element.querySelectorAll('.kolam-dot, .kolam-dot-animated, .kolam-line, .kolam-line-animated, .kolam-curve, .kolam-curve-animated');
+    allElements.forEach(el => {
+        (el as HTMLElement).style.opacity = '1';
+    });
+
+    const gif = encodeGIF(frames, {
+        width: pattern.dimensions.width,
+        height: pattern.dimensions.height,
+        delay: delay / 10, // Convert to 1/100th seconds
+    });
+
+    return new Blob([gif], { type: 'image/gif' });
+}
 }
